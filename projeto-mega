@@ -1,0 +1,181 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <pthread.h>
+#define LINHA 5000 
+#define COLUNA 6 
+#define APOSTA 3 
+#define APOSTADOR 3
+#define MAIORES 15 
+#define NUMEROS 60
+
+int main (){
+	char apostador[APOSTADOR][1000],cpf[11];
+	int mega[NUMEROS][4],quant [3][MAIORES],resultado [LINHA][COLUNA],aposta[APOSTA][COLUNA];
+	int a,b,c,d,e,f,g,aleatoria;
+  
+		
+	srand( time(NULL) );
+   	for (a=0;a<MAIORES;a++){
+     	    quant[0][a]=0;
+     	    quant[1][a]=0;
+     	    quant[2][a]=0;
+	}
+	for(a=0;a<NUMEROS;a++){
+	   	mega[a][0] = 0;
+		mega[a][1] = 0;	
+		mega[a][2] = 0;
+		mega[a][3] = a+1;
+	}
+	
+	  
+	for (a=0;a<LINHA;a++){
+		for (b=0;b<COLUNA;b++){
+			aleatoria=rand()%NUMEROS;
+			while (mega[aleatoria][1]==1){
+			      aleatoria=rand()%NUMEROS;}
+		    mega[aleatoria][1]=1;
+		    mega[aleatoria][2]+=1;
+		    mega[aleatoria][0]=a+1;
+			resultado[a][b]=(aleatoria+1);
+		}   
+		for (c=0;c<NUMEROS;c++)
+			mega[c][1] = 0;  
+    }
+    
+    printf("Vamos sortear 5.000 sorteios!\n\n");
+    sleep(2);
+    for (a=0;a<LINHA;a++){
+	    printf ("Jogo  (%d) =\t",a+1);
+	    for (b=0;b<COLUNA;b++)
+	    	printf ("%.2d\t",resultado[a][b]);
+	    printf ("\n");
+   }
+   
+   
+	for (a=0;a<LINHA;a++)
+        for (b=0;b<COLUNA;b++)
+             for (c=b+1;c<COLUNA;c++) 
+                if (resultado[a][c]==resultado[a][b])
+                    printf ("O numero:%.2d, Na linha %.2d , se repete na coluna %.2d e na coluna %.2d.\n",resultado[a][b],a+1,b+1,c+1);
+printf ("Interessante...\n\n");
+	sleep(2);
+	printf(" Vamos mostrar a quantidade de vezes que cada número saiu?\n\n");
+	sleep(3);
+	
+   for (a=0;a<NUMEROS;a++)
+       printf("Numero %.2d = %.2d\n",a+1,mega[a][2]);
+       
+
+   for (c=1;c<NUMEROS;c++){
+       for(d=(c+1);d<=NUMEROS;d++){
+           f=0;
+           for (a=0;a<LINHA;a++){ 
+             e=0;
+             for (b=0;b<COLUNA;b++){
+                if ((resultado[a][b])==c)
+                    e++;
+		        else if ((resultado[a][b])==d)
+                    e++;
+			 }
+             if (e==2)
+                 f++;
+           }
+           g=0;
+           for (a=1;a<MAIORES;a++)
+               if(quant[0][g]>quant[0][a])
+                  g=a;
+           if(quant[0][g]<f){
+              quant[0][g]=f;
+              quant[1][g]=c;
+              quant[2][g]=d;
+            }              
+        }
+	}
+	
+	printf ("Interessante...\n\n");
+	sleep(3);
+	printf("Sera que consigo ver as %d duplas que mais aparecerão?\n\n", MAIORES);
+
+   for (a=0;a<MAIORES;a++)
+       printf ("Numeros %.2d e %.2d = %.2d vezes\n",quant[1][a],quant[2][a],quant[0][a]);
+
+ printf ("Interessante...\n\n");
+	sleep(2);
+  printf("Vamos mostrar os 15 números únicos que mais saíram nos sorteios\n\n");
+	
+   	for (a=0;a<MAIORES;a++){
+     	    quant[0][a]=0;
+     	    quant[1][a]=0;
+     	    quant[2][a]=0;
+	}
+	
+   for (c=1;c<=NUMEROS;c++){
+           f=0;
+           for (a=0;a<LINHA;a++){ 
+             for (b=0;b<COLUNA;b++)
+                if ((resultado[a][b])==c)
+                	f++;
+           }
+           g=0;
+           for (a=1;a<MAIORES;a++)
+               if(quant[0][g]>quant[0][a])
+                  g=a;
+           if(quant[0][g]<f){
+              quant[0][g]=f;
+              quant[1][g]=c;
+            }              
+    }
+   for (a=0;a<MAIORES;a++){
+   		c=0;
+   		for(b=1;b<MAIORES;b++){
+    		if (quant[1][c]>quant[1][b])
+    			c=b;
+		}
+       	printf ("Numeros %.2d = %.2d vezes\n",quant[1][c],quant[0][a]);
+       	quant[1][c]=1000 ;
+	}
+	printf ("Interessante...\n\n");
+	sleep(2);
+  printf(" Vamos ver a quantidade de jogadas desde a última vez que o número foi sorteado\n\n");
+  sleep(3);
+  	
+  
+	for (a=0;a<NUMEROS;a++){
+  		b=LINHA-mega[a][0];
+		if(b>0)
+			printf ("Numero %.2d = não sai a %.2d sorteios seguidos.\n",a+1,b);
+		else
+			printf ("Numero %.2d = saiu no ultimo sorteio.\n",a+1);
+	}
+	
+	printf ("Interessante...\n\n");
+	sleep(2);
+  printf ("Vamos fazer uma aposta?\n\n");
+  sleep(1);
+	printf ("Faça sua Aposta!\n\n");
+  sleep(2);
+
+	for (a=0;a<APOSTADOR;a++){
+		printf("APOSTADOR %d, DIGITE SEU NOME:\n",a+1);
+		scanf("%s",apostador[a]);
+    printf("DIGITE SEU CPF:\n");
+    scanf("%s", cpf);
+		printf("DIGITE SUA APOSTA %s:\n",apostador[a]);
+		for(b=0;b<COLUNA;b++)
+			scanf("%d",&aposta[a][b]);
+	}
+	
+	for(c=0;c<APOSTADOR;c++){
+		d=0;
+		a = rand() % 5000;
+			for (b=0;b<COLUNA;b++){
+				if ((a+1)==aposta[c][b])
+					d+=mega[a][2];//
+			}
+		
+		printf("Parabéns %s, você acertou %d números!\n.",apostador[c],d);
+	}
+	
+	system("null");
+}
